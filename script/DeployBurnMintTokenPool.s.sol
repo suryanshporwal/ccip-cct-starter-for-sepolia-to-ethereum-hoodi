@@ -13,13 +13,10 @@ contract DeployBurnMintTokenPool is Script {
         // Get the chain name based on the current chain ID
         string memory chainName = HelperUtils.getChainName(block.chainid);
 
-        // Construct the path to the deployed token JSON file
         string memory root = vm.projectRoot();
-        string memory deployedTokenPath = string.concat(root, "/script/output/deployedToken_", chainName, ".json");
 
-        // Extract the deployed token address from the JSON file
-        address tokenAddress =
-            HelperUtils.getAddressFromJson(vm, deployedTokenPath, string.concat(".deployedToken_", chainName));
+        // Resolve the latest valid token deployment for this chain and heal stale output files if needed.
+        address tokenAddress = HelperUtils.getDeployedTokenAddress(vm, root, chainName, block.chainid);
 
         // Fetch network configuration (router and RMN proxy addresses)
         HelperConfig helperConfig = new HelperConfig();
@@ -27,6 +24,7 @@ contract DeployBurnMintTokenPool is Script {
 
         // Ensure that the token address, router, and RMN proxy are valid
         require(tokenAddress != address(0), "Invalid token address");
+        require(tokenAddress.code.length > 0, "Configured token address is not a deployed contract");
         require(router != address(0) && rmnProxy != address(0), "Router or RMN Proxy not defined for this network");
 
         // Cast the token address to the IBurnMintERC20 interface

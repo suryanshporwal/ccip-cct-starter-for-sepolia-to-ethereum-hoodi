@@ -56,6 +56,9 @@ contract DeployToken is Script {
 
         vm.stopBroadcast();
 
+        // Only persist the output if the token is actually deployed at the expected address.
+        require(tokenAddress.code.length > 0, "Deployed token address is not a contract");
+
         // Prepare to write the deployed token address to a JSON file
         string memory jsonObj = "internal_key";
         string memory key = string(abi.encodePacked("deployedToken_", chainName));

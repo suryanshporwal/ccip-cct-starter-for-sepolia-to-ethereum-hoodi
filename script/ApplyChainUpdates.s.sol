@@ -12,10 +12,8 @@ contract ApplyChainUpdates is Script {
         // Get the current chain name based on the chain ID
         string memory chainName = HelperUtils.getChainName(block.chainid);
 
-        // Construct paths to the configuration and local pool JSON files
         string memory root = vm.projectRoot();
         string memory configPath = string.concat(root, "/script/config.json");
-        string memory localPoolPath = string.concat(root, "/script/output/deployedTokenPool_", chainName, ".json");
 
         // Read the remoteChainId from config.json based on the current chain ID
         uint256 remoteChainId = HelperUtils.getUintFromJson(
@@ -24,17 +22,11 @@ contract ApplyChainUpdates is Script {
 
         // Get the remote chain name based on the remoteChainId
         string memory remoteChainName = HelperUtils.getChainName(remoteChainId);
-        string memory remotePoolPath =
-            string.concat(root, "/script/output/deployedTokenPool_", remoteChainName, ".json");
-        string memory remoteTokenPath = string.concat(root, "/script/output/deployedToken_", remoteChainName, ".json");
 
-        // Extract addresses from the JSON files
-        address poolAddress =
-            HelperUtils.getAddressFromJson(vm, localPoolPath, string.concat(".deployedTokenPool_", chainName));
-        address remotePoolAddress =
-            HelperUtils.getAddressFromJson(vm, remotePoolPath, string.concat(".deployedTokenPool_", remoteChainName));
-        address remoteTokenAddress =
-            HelperUtils.getAddressFromJson(vm, remoteTokenPath, string.concat(".deployedToken_", remoteChainName));
+        // Resolve the latest valid local and remote deployments and heal stale output files if needed.
+        address poolAddress = HelperUtils.getDeployedTokenPoolAddress(vm, root, chainName, block.chainid);
+        address remotePoolAddress = HelperUtils.getDeployedTokenPoolAddress(vm, root, remoteChainName, remoteChainId);
+        address remoteTokenAddress = HelperUtils.getDeployedTokenAddress(vm, root, remoteChainName, remoteChainId);
 
         // For remotePoolAddresses, create an array with the remotePoolAddress
         address[] memory remotePoolAddresses = new address[](1);
@@ -48,6 +40,7 @@ contract ApplyChainUpdates is Script {
         uint64 remoteChainSelector = remoteNetworkConfig.chainSelector;
 
         require(poolAddress != address(0), "Invalid pool address");
+        require(poolAddress.code.length > 0, "Configured pool address is not a deployed contract");
         require(remotePoolAddress != address(0), "Invalid remote pool address");
         require(remoteTokenAddress != address(0), "Invalid remote token address");
         require(remoteChainSelector != 0, "chainSelector is not defined for the remote chain");

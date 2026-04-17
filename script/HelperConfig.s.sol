@@ -20,6 +20,8 @@ contract HelperConfig is Script {
     constructor() {
         if (block.chainid == 11155111) {
             activeNetworkConfig = getEthereumSepoliaConfig();
+        } else if (block.chainid == 560048) {
+            activeNetworkConfig = getEthereumHoodiConfig();
         } else if (block.chainid == 421614) {
             activeNetworkConfig = getArbitrumSepolia();
         } else if (block.chainid == 43113) {
@@ -41,6 +43,20 @@ contract HelperConfig is Script {
             nativeCurrencySymbol: "ETH"
         });
         return ethereumSepoliaConfig;
+    }
+
+    function getEthereumHoodiConfig() public pure returns (NetworkConfig memory) {
+        NetworkConfig memory ethereumHoodiConfig = NetworkConfig({
+            chainSelector: 10380998176179737091,
+            router: 0xc93Dac3422660A41500a24C94BF14616995e3CA6,
+            rmnProxy: 0xEB5D23FD0CFcd7EB3D16ac6F3A58CAdaF44c2324,
+            tokenAdminRegistry: 0x073b3C71eb4630c4C88F1f72954fdFff30cf3f8D,
+            registryModuleOwnerCustom: 0x19e696e75ccbB3155EEbB579BFa555Fab22293bA,
+            link: 0x76c00B055414de203B79B4955E28119BF459033e,
+            confirmations: 2,
+            nativeCurrencySymbol: "ETH"
+        });
+        return ethereumHoodiConfig;
     }
 
     function getArbitrumSepolia() public pure returns (NetworkConfig memory) {

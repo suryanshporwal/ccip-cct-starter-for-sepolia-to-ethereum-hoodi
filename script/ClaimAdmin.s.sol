@@ -16,12 +16,10 @@ contract ClaimAdmin is Script {
 
         // Define paths to the necessary JSON files
         string memory root = vm.projectRoot();
-        string memory deployedTokenPath = string.concat(root, "/script/output/deployedToken_", chainName, ".json");
         string memory configPath = string.concat(root, "/script/config.json");
 
-        // Extract values from the JSON files
-        address tokenAddress =
-            HelperUtils.getAddressFromJson(vm, deployedTokenPath, string.concat(".deployedToken_", chainName));
+        // Resolve the latest valid token deployment for this chain and heal stale output files if needed.
+        address tokenAddress = HelperUtils.getDeployedTokenAddress(vm, root, chainName, block.chainid);
         bool withCCIPAdmin = HelperUtils.getBoolFromJson(vm, configPath, ".BnMToken.withGetCCIPAdmin");
         address tokenAdmin = HelperUtils.getAddressFromJson(vm, configPath, ".BnMToken.ccipAdminAddress");
 
@@ -30,6 +28,7 @@ contract ClaimAdmin is Script {
         (,,,, address registryModuleOwnerCustom,,,) = helperConfig.activeNetworkConfig();
 
         require(tokenAddress != address(0), "Invalid token address");
+        require(tokenAddress.code.length > 0, "Configured token address is not a deployed contract");
         require(registryModuleOwnerCustom != address(0), "Registry module owner custom is not defined for this network");
 
         vm.startBroadcast();

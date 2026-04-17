@@ -11,13 +11,10 @@ contract AcceptAdminRole is Script {
         // Get the chain name based on the current chain ID
         string memory chainName = HelperUtils.getChainName(block.chainid);
 
-        // Construct the path to the deployed token JSON file
         string memory root = vm.projectRoot();
-        string memory deployedTokenPath = string.concat(root, "/script/output/deployedToken_", chainName, ".json");
 
-        // Extract the deployed token address from the JSON file
-        address tokenAddress =
-            HelperUtils.getAddressFromJson(vm, deployedTokenPath, string.concat(".deployedToken_", chainName));
+        // Resolve the latest valid token deployment for this chain and heal stale output files if needed.
+        address tokenAddress = HelperUtils.getDeployedTokenAddress(vm, root, chainName, block.chainid);
 
         // Fetch the network configuration to get the TokenAdminRegistry address
         HelperConfig helperConfig = new HelperConfig();
@@ -37,6 +34,12 @@ contract AcceptAdminRole is Script {
 
         // Fetch the token configuration for the given token address
         TokenAdminRegistry.TokenConfig memory tokenConfig = tokenAdminRegistryContract.getTokenConfig(tokenAddress);
+
+        if (tokenConfig.administrator == signer) {
+            console.log("Signer is already the administrator for token:", tokenAddress);
+            vm.stopBroadcast();
+            return;
+        }
 
         // Get the pending administrator for the token
         address pendingAdministrator = tokenConfig.pendingAdministrator;

@@ -13,11 +13,9 @@ contract MintTokens is Script {
         // Construct paths to the configuration and token JSON files
         string memory root = vm.projectRoot();
         string memory configPath = string.concat(root, "/script/config.json");
-        string memory tokenPath = string.concat(root, "/script/output/deployedToken_", chainName, ".json");
 
-        // Extract the token address from the JSON file
-        address tokenAddress =
-            HelperUtils.getAddressFromJson(vm, tokenPath, string.concat(".deployedToken_", chainName));
+        // Resolve the latest valid token deployment for this chain and heal stale output files if needed.
+        address tokenAddress = HelperUtils.getDeployedTokenAddress(vm, root, chainName, block.chainid);
 
         // Read the amount to mint from config.json
         uint256 amount = HelperUtils.getUintFromJson(vm, configPath, ".tokenAmountToMint");
@@ -26,6 +24,7 @@ contract MintTokens is Script {
         address receiverAddress = msg.sender;
 
         require(tokenAddress != address(0), "Invalid token address");
+        require(tokenAddress.code.length > 0, "Configured token address is not a deployed contract");
         require(amount > 0, "Invalid amount to mint");
 
         vm.startBroadcast();
