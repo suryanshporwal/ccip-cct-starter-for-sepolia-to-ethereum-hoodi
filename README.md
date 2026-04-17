@@ -56,21 +56,19 @@ The `config.json` file contains the following parameters:
 
 ### Environment Variables
 
-Example `.env` file to interact with the Fuji testnet and Arbitrum Sepolia testnet:
+Example `.env` file to interact with Ethereum Sepolia and Ethereum Hoodi:
 
 ```bash
 SEPOLIA_RPC_URL=<your_rpc_url>
-ARBITRUM_SEPOLIA_RPC_URL=<your_rpc_url>
+HOODI_RPC_URL=<your_rpc_url>
 ETHERSCAN_API_KEY=<your_etherscan_api_key>
-ARBISCAN_API_KEY=<your_arbiscan_api_key>
 ```
 
 Variables to configure:
 
 - `SEPOLIA_RPC_URL`: The RPC URL for the Sepolia testnet. You can get this from the [Alchemy](https://www.alchemy.com/) or [Infura](https://infura.io/) website.
-- `ARBITRUM_SEPOLIA_RPC_URL`: The RPC URL for the Arbitrum Sepolia testnet. You can get this from the [Alchemy](https://www.alchemy.com/) or [Infura](https://infura.io/) website.
-- `ETHERSCAN_API_KEY`: An API key from Etherscan to verify your contracts. You can obtain one from [Etherscan](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics).
-- `ARBISCAN_API_KEY`: An API key from Arbiscan to verify your contracts on Arbitrum. See [this guide](https://docs.arbiscan.io/getting-started/viewing-api-usage-statistics) to get one from Arbiscan.
+- `HOODI_RPC_URL`: The RPC URL for the Ethereum Hoodi testnet.
+- `ETHERSCAN_API_KEY`: An API key from Etherscan to verify your contracts on Sepolia or Hoodi. You can obtain one from [Etherscan](https://docs.etherscan.io/getting-started/viewing-api-usage-statistics).
 
 **Load the environment variables** into the terminal session where you will run the commands:
 
@@ -86,10 +84,10 @@ On Sepolia:
 forge script script/DeployToken.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
-On Arbirtrum Sepolia:
+On Hoodi:
 
 ```bash
-forge script script/DeployToken.s.sol --rpc-url $ARBITRUM_SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
+forge script script/DeployToken.s.sol --rpc-url $HOODI_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
 ### 2. Deploy the token pools
@@ -100,10 +98,10 @@ On Sepolia:
 forge script script/DeployBurnMintTokenPool.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
-On Arbitrum Spolia:
+On Hoodi:
 
 ```bash
-forge script script/DeployBurnMintTokenPool.s.sol --rpc-url $ARBITRUM_SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
+forge script script/DeployBurnMintTokenPool.s.sol --rpc-url $HOODI_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
 ### 3. Claim the CCIP admin role
@@ -114,10 +112,10 @@ On Sepolia:
 forge script script/ClaimAdmin.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
-On Arbitrum Spolia:
+On Hoodi:
 
 ```bash
-forge script script/ClaimAdmin.s.sol --rpc-url $ARBITRUM_SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
+forge script script/ClaimAdmin.s.sol --rpc-url $HOODI_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
 ### 4. Accept the CCIP admin role
@@ -128,10 +126,10 @@ On Sepolia:
 forge script script/AcceptAdminRole.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
-On Arbitrum Spolia:
+On Hoodi:
 
 ```bash
-forge script script/AcceptAdminRole.s.sol --rpc-url $ARBITRUM_SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
+forge script script/AcceptAdminRole.s.sol --rpc-url $HOODI_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
 ### 5. Set the pools associated with the tokens
@@ -142,10 +140,10 @@ On Sepolia:
 forge script script/SetPool.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
-On Arbitrum Spolia:
+On Hoodi:
 
 ```bash
-forge script script/SetPool.s.sol --rpc-url $ARBITRUM_SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
+forge script script/SetPool.s.sol --rpc-url $HOODI_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
 ### 6. Add the remote chain to the token pool
@@ -156,10 +154,10 @@ On Sepolia:
 forge script script/ApplyChainUpdates.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
-On Aribtrum Sepolia:
+On Hoodi:
 
 ```bash
-forge script script/ApplyChainUpdates.s.sol --rpc-url $ARBITRUM_SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
+forge script script/ApplyChainUpdates.s.sol --rpc-url $HOODI_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
 ### 7. Mint tokens
@@ -168,8 +166,9 @@ forge script script/ApplyChainUpdates.s.sol --rpc-url $ARBITRUM_SEPOLIA_RPC_URL 
 forge script script/MintTokens.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
 
-### 8. Transfer tokens cross-chain from Sepolia to Arbitrum Sepolia
+### 8. Transfer tokens cross-chain from Sepolia to Hoodi
 
 ```bash
-forge script script/TransferTokens.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast <your-address>
+forge script script/TransferTokens.s.sol --rpc-url $SEPOLIA_RPC_URL --account <your-keystore-name> --broadcast --sender <your-address>
 ```
+# ccip-cct-starter-for-sepolia-to-ethereum-hoodi
